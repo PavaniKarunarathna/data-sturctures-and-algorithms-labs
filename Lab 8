@@ -1,0 +1,85 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+// function to heapify the tree
+void heapify(int arr[], int n, int root)
+{
+   // build heapify
+   int maxNode = root;    // Initializing maximum value as root
+   int leftNode = 2*root + 1;  //Left child node
+   int rightNode = 2*root + 2;  //Right child node
+
+   //check whether left node is larger than root
+   if (leftNode < n  && arr[leftNode] > arr[maxNode]){
+        maxNode = leftNode;
+   }
+
+   //check whether right node is larger than root
+   if (rightNode < n && arr[rightNode] > arr[maxNode]){
+        maxNode = rightNode;
+   }
+
+   //If maximum value is not the root
+   if (maxNode != root) {
+
+        swap(arr[root], arr[maxNode]);
+
+        //Recursively heapify
+        heapify(arr, n, maxNode);
+    }
+
+}
+
+// implementing heap sort
+void heapSort(int arr[], int n)
+{
+   // build heap
+   for (int i=n/2-1; i>=0; i--){
+        heapify(arr, n, i);
+   }
+
+    //Extracting elements from the heap one by one
+    for (int i=n-1; i>=0; i--) {
+        //Move current root to end
+        swap(arr[0], arr[i]);
+
+        //call max heapify
+        heapify(arr, i, 0);
+    }
+
+}
+
+/* print contents of array */
+void displayArray(int arr[], int n)
+{
+   for (int i=0; i<n; ++i)
+   cout << arr[i] << " ";
+   cout << "\n";
+}
+
+// main program
+
+int main()
+{
+    vector<int> arr;
+    int a;
+    cout<<"Use a string to stop inputting elements"<<endl;
+    cout<<"Input array"<<endl;
+    while(cin>>a ){
+        arr.push_back(a);
+    }
+    int n = arr.size();
+    
+    int heap_arr[n];
+    for(int i=0; i<n; i++){
+        heap_arr[i] = arr[i];
+    }
+    cout<<"Input array"<<endl;
+    displayArray(heap_arr,n);
+
+    heapSort(heap_arr, n);
+
+    cout << "Sorted array"<<endl;
+    displayArray(heap_arr, n);
+}
