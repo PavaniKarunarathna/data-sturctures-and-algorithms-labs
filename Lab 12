@@ -1,0 +1,92 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <limits>
+
+using namespace std;
+
+
+struct Node {
+    int id;
+    int distance;
+
+    Node(int _id, int _distance) : id(_id), distance(_distance) {}
+
+    // Comparison operator for priority queue
+    bool operator>(const Node& other) const {
+        return distance > other.distance;
+    }
+};
+
+// Dijkstra's algorithm implementation
+vector<int> dijkstra(const vector<vector<pair<int, int>>>& graph, int start) {
+    int numNodes = graph.size();
+    vector<int> distances(numNodes, numeric_limits<int>::max());
+    distances[start] = 0;
+
+    priority_queue<Node, vector<Node>, greater<Node>> pq;
+    pq.emplace(start, 0);
+
+    while (!pq.empty()) {
+        Node current = pq.top();
+        pq.pop();
+
+        int nodeId = current.id;
+        int nodeDistance = current.distance;
+
+        if (nodeDistance > distances[nodeId]) {
+            continue;
+        }
+
+        for (const auto& neighbor : graph[nodeId]) {
+            int neighborId = neighbor.first;
+            int edgeWeight = neighbor.second;
+            int distance = nodeDistance + edgeWeight;
+
+            if (distance < distances[neighborId]) {
+                distances[neighborId] = distance;
+                pq.emplace(neighborId, distance);
+            }
+        }
+    }
+
+    return distances;
+}
+
+int main() {
+    int numNodes, numEdges;
+    cout << "Input number of nodes: ";
+    cin >> numNodes;
+    cout << "Input number of edges: ";
+    cin >> numEdges;
+
+    // Create an empty graph with numNodes
+    vector<vector<pair<int, int>>> graph(numNodes);
+
+    // Get the edges and their weights from the user
+    cout << "Input the source, destination, and weight for each edge:\n";
+    for (int i = 0; i < numEdges; ++i) {
+        int source, destination, weight;
+        cin >> source >> destination >> weight;
+        graph[source].emplace_back(destination, weight);
+        graph[destination].emplace_back(source, weight);
+    }
+
+    for(int i=0; i<numNodes; i++){
+        // Get the source city from the user
+        int source_City;
+        cout << "Enter the source city: ";
+        cin >> source_City;
+
+    
+        vector<int> shortest_Distances = dijkstra(graph, source_City);
+
+    
+        cout << "Shortest distances from the source city " << source_City << ":\n";
+        for (int city = 0; city < shortest_Distances.size(); ++city) {
+            cout << "From City " << city << ": " << shortest_Distances[city] << endl;
+        }
+        cout<<"\n";
+    }
+    return 0;
+}
